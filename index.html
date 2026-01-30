@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>أسعار الذهب اليوم في السعودية</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --gold:#c9a227;
+  --bg:#f8f8f8;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+
+  --up:#dc2626;     /* 🔴 مرتفع */
+  --down:#16a34a;   /* 🟢 منخفض */
+  --same:#9ca3af;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:'Cairo',sans-serif;
+  direction:rtl;
+  color:var(--text);
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
+
+header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+header h1{
+  margin:0;
+  font-size:24px;
+  font-weight:700;
+}
+
+header p{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 8px 22px rgba(0,0,0,.06);
+  margin-bottom:20px;
+}
+
+.ounce{
+  text-align:center;
+  font-size:18px;
+  font-weight:600;
+  color:var(--gold);
+  margin-bottom:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px 8px;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+  font-size:14px;
+}
+
+th{
+  color:var(--muted);
+  font-weight:600;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:600;
+}
+
+.up{color:var(--up)}
+.down{color:var(--down)}
+.same{color:var(--same)}
+
+/* ===== Calculator ===== */
+.calc-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 16px 0;
+  font-size:18px;
+  font-weight:700;
+}
+
+.calc{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.field label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.select-wrap{
+  position:relative;
+}
+
+.select-wrap select{
+  width:100%;
+  padding:12px 40px 12px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-family:'Cairo';
+  font-size:14px;
+  appearance:none;
+  background:#fff;
+}
+
+.select-wrap i{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:12px;
+  color:var(--muted);
+  pointer-events:none;
+}
+
+.field input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-family:'Cairo';
+  font-size:14px;
+}
+
+.calc-btn{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:linear-gradient(135deg,#c9a227,#e6c75a);
+  color:#ffffff;
+  font-family:'Cairo';
+  border:none;
+  padding:12px;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.calc-btn:hover{
+  transform:translateY(-1px);
+}
+
+.result{
+  margin-top:16px;
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+}
+
+footer{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:10px;
+}
+
+@media(max-width:600px){
+  header h1{font-size:20px}
+  .ounce{font-size:16px}
+  th,td{font-size:13px}
+  .calc{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <h1>أسعار الذهب في السعودية</h1>
+  <p id="time">—</p>
+</header>
+
+<div class="card">
+  <div class="ounce" id="ounce"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>العيار</th>
+        <th>ريال / جرام</th>
+        <th>دولار / جرام</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody id="goldTable"></tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3 class="calc-title">
+    <i class="fa-solid fa-calculator"></i>
+    حاسبة سعر الذهب
+  </h3>
+
+  <div class="calc">
+
+    <div class="field">
+      <label>العيار</label>
+      <div class="select-wrap">
+        <select id="karat">
+          <option value="1">عيار 24</option>
+          <option value="0.916">عيار 22</option>
+          <option value="0.875">عيار 21</option>
+          <option value="0.75">عيار 18</option>
+        </select>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>الوزن (جرام)</label>
+      <input type="number" id="weight" placeholder="مثال: 10">
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">
+      <i class="fa-solid fa-equals"></i>
+      احسب السعر
+    </button>
+
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<footer>
+  تحديث تلقائي • مصدر البيانات: GoldAPI
+</footer>
+
+</div>
+
+<script>
+const API_KEY="goldapi-htclqsml1d07vk-io";
+
+async function fetchGold(){
+  const [sar,usd]=await Promise.all([
+    fetch("https://www.goldapi.io/api/XAU/SAR",{headers:{"x-access-token":API_KEY}}),
+    fetch("https://www.goldapi.io/api/XAU/USD",{headers:{"x-access-token":API_KEY}})
+  ]);
+
+  const s=await sar.json();
+  const u=await usd.json();
+
+  const gSAR=s.price_gram_24k;
+  const gUSD=u.price_gram_24k;
+
+  document.getElementById("ounce").innerText =
+    `سعر الأونصة: ${s.price.toFixed(2)} ريال`;
+
+  const old=localStorage.getItem("g24");
+  localStorage.setItem("g24",gSAR);
+
+  let cls="same",icon="fa-minus",text="مستقر";
+
+  if(old){
+    if(gSAR > old){ cls="up"; icon="fa-arrow-up"; text="مرتفع"; }
+    else if(gSAR < old){ cls="down"; icon="fa-arrow-down"; text="منخفض"; }
+  }
+
+  const rows=[
+    ["24",gSAR,gUSD],
+    ["22",gSAR*0.916,gUSD*0.916],
+    ["21",gSAR*0.875,gUSD*0.875],
+    ["18",gSAR*0.75,gUSD*0.75]
+  ];
+
+  const table=document.getElementById("goldTable");
+  table.innerHTML="";
+  rows.forEach(r=>{
+    table.innerHTML+=`
+      <tr>
+        <td>${r[0]}</td>
+        <td>${r[1].toFixed(2)}</td>
+        <td>${r[2].toFixed(2)}</td>
+        <td>
+          <div class="status ${cls}">
+            <i class="fa-solid ${icon}"></i>
+            ${text}
+          </div>
+        </td>
+      </tr>`;
+  });
+
+  document.getElementById("time").innerText =
+    "آخر تحديث: "+new Date().toLocaleString("ar-SA");
+}
+
+function calculate(){
+  const k=document.getElementById("karat").value;
+  const w=document.getElementById("weight").value;
+  const price=localStorage.getItem("g24");
+  if(!price || !w) return;
+  document.getElementById("result").innerText =
+    `≈ ${(w*price*k).toFixed(2)} ريال`;
+}
+
+fetchGold();
+setInterval(fetchGold,600000);
+</script>
+
+</body>
+</html>
